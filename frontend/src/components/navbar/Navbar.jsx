@@ -2,6 +2,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Fragment, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { useAuth } from '../../utils/auth'
 
 
 
@@ -11,7 +12,10 @@ function classNames(...classes) {
 
 export default function Navabar({navigation}) {
 
-
+  const auth=useAuth();
+ const handleLogout=()=>{
+    auth.logout();
+ }
   return (
  
     <Disclosure as="nav" className="bg-violet-500">
@@ -86,8 +90,9 @@ export default function Navabar({navigation}) {
                       <Menu.Item>
                         {({ active }) => (
                           <Link
-                            to="/"
+                         
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            onClick={()=>handleLogout()}
                           >
                             Sign out
                           </Link>

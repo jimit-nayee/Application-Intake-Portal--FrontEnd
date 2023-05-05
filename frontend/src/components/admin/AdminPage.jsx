@@ -1,10 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from "../navbar/Navbar"
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../utils/auth'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 
 
 
 const AdminPage = () => {
+  const auth=useAuth();
+  const [admin,setAdmin]=useState(false)
+  const navigate=useNavigate()
+  // alert(Cookies.get("token"))
+useEffect(()=>{
+  
+  let token=(Cookies.get("token"));
+  if(token!=null)
+  {
+    token=jwtDecode(token);
+    if(token.authorities=="ROLE_ADMIN")
+    {
+      setAdmin(true)
+    }
+    else{
+      window.location.href="/"
+    }
+  }
+  else{
+    window.location.href="/"
+  }
+  
+})
   const navigation = [
     { name: 'Customers', href: 'list', current: true },
     { name: 'Add', href: 'add', current: false },
@@ -13,12 +39,15 @@ const AdminPage = () => {
  
   ]
   return (
-    <>
-    
-   <Navbar navigation={navigation} />
    
-     <Outlet/>
-    </>
+   admin ?   <>
+    <Navbar navigation={navigation} />
+      <Outlet/>
+     </>:""
+   
+
+  
+    
   )
 }
 

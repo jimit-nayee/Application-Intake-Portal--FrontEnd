@@ -9,7 +9,7 @@ import { useTabContext } from '@mui/lab';
 import Pdf from '../../pdf/Pdf';
 import api from '../../services/mainService';
 import { tr } from 'date-fns/locale';
-import { getCustomersListForAgent } from '../../services/CustomerForReviewService';
+import { getListOfCutomerForReview } from '../../services/CustomerForReviewService';
 
 const ReviewList = () => {
 
@@ -32,7 +32,7 @@ const ReviewList = () => {
   ]
 
   useEffect(() => {
-    getCustomersListForAgent()
+    getListOfCutomerForReview()
       .then((res) => { console.log(res); setTableData(res.data) })
       .catch((err) => { console.log(err); setTableData(false) })
   }, [tableUpdated]);

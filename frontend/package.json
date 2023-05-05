@@ -23,6 +23,7 @@
     "dayjs": "^1.9.6",
     "debounce": "^1.2.1",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^3.1.2",
     "material-table": "^1.69.3",
     "pdf-lib": "^1.12.0",
     "react": "^17.0.2",

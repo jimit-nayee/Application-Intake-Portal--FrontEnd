@@ -1,27 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { loginAPI } from "../../services/AuthorizationService";
+import jwt from 'jwt-decode'
 
+import { useAuth } from "../../utils/auth";
 
 function Login() {
-  // const [credentials, setCredentials] = useState({});
+  const [user, setUser] = useState({});
+  
+   const navigate = useNavigate();
+  const auth=useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate();
   const formSubmit = (data) => {
     // setCredentials(data);
-    console.log(data);
+    // console.log(data);
+ 
     loginAPI(data).then((res) => {
       Cookies.set("token", res.data);
-      console.log(res);
-      navigate("/agent");
+      const token = jwt(res.data);
+      console.log(token)
+      auth.login(token);
+      if(token.authorities=="ROLE_ADMIN")
+      {
+        navigate("admin_page",{replace:true})
+      }
+      if(token.authorities=="ROLE_REVIEWER")
+      {
+        navigate("reviewer_page",{replace:true})
+      }
+      if(token.authorities=="ROLE_AGENT")
+      {
+        navigate("agent_page",{replace:true})
+      }
+      // if(data.role=="Admin")
+      //   navigate("/admin_page")
 
     }).catch((err) => {
       console.log(err.response.data);
@@ -52,6 +72,23 @@ function Login() {
             required: "Password is required",
           })}
         />
+        {/* <label htmlFor="Role">    Login as</label>
+                <select
+            name=""
+            id="Role"
+            className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            {...register("role", {
+              required: "Role is required",
+            })}
+          >
+            <option selected disabled>
+                Select
+            </option>
+
+            <option value="ROLE_ADMIN">Admin</option>
+            <option value="ROLE_AGENT">Agent</option>
+            <option value="ROLE_REVIEWER">Reviewer</option>
+          </select> */}
         <p style={{ color: "red" }}>{errors.password?.message}</p>
         <button className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full">
           Login

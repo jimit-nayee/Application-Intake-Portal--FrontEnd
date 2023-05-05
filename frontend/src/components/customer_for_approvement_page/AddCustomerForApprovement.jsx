@@ -7,6 +7,8 @@ import { PulseLoader } from "react-spinners"
 import { Toaster, toast } from 'react-hot-toast';
 import { registerCustomerAPI, validateAPI } from '../../services/CustomerService';
 import api from '../../services/mainService';
+import jwtDecode from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 const err = (e) => toast.error(e)
 const success = (e) => toast.success(e)
@@ -15,7 +17,7 @@ let fileData = { file: "" }
 function AddCustomerForApprovement() {
 
   useEffect(() => {
-    alert("hello")
+  
     api.get("http://localhost:8080/csrf", { withCredentials: true })
       .then(response => {
         console.log(response);
@@ -88,10 +90,10 @@ function AddCustomerForApprovement() {
   const formSubmit = (data) => {
     //this has to be dynamic via jwt token
     let approvemntStatus = "2";
-    let addedBy = "shrimaliparth1@gmail.com"
+    
     data["pdf"] = fileData.file;
     data["approvementStatus"] = approvemntStatus;
-    data["addedBy"] = addedBy;
+  
     // if(jwt.getRole==="admin")
     // {
     //   approvemntStatus=1;
@@ -103,7 +105,8 @@ function AddCustomerForApprovement() {
     }
     setSubmitting(true);
     console.log(data)
-    registerCustomerAPI({ ...data, approvemntStatus: approvemntStatus, addedBy: addedBy }).then((res) => {
+    alert(jwtDecode(Cookies.get("token")).sub)
+    registerCustomerAPI({ ...data, approvemntStatus: approvemntStatus, addedBy: jwtDecode(Cookies.get("token")).sub }).then((res) => {
       setSubmitting(false)
 
       if (res.data.result === "true") {
