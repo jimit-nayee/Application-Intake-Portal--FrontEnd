@@ -35,7 +35,7 @@ function Login() {
       style={{ padding: "30px 30px" }}
     >
       <form className="form flex flex-col" onSubmit={handleSubmit(formSubmit)}>
-        <label htmlFor="Username">Username</label>
+        <label htmlFor="Username">Email</label>
         <input
           type="text"
           id="email"

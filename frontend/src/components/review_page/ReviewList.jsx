@@ -9,7 +9,7 @@ import { useTabContext } from '@mui/lab';
 import Pdf from '../../pdf/Pdf';
 import api from '../../services/mainService';
 import { tr } from 'date-fns/locale';
-
+import { getCustomersListForAgent } from '../../services/CustomerForReviewService';
 
 const ReviewList = () => {
 
@@ -28,28 +28,29 @@ const ReviewList = () => {
     { title: "Address", field: "address" },
     { title: "City", field: "city", filterPlaceholder: "filter" },
     { title: "State", field: "state", headerStyle: { color: "#fff" } },
+    { title: "Added By", field: "addedBy", headerStyle: { color: "#fff" } },
   ]
 
   useEffect(() => {
-    api.get("http://localhost:8080/getCustomersListForAgent?email=brijesh@gmail.com", { withCredentials: true })
-    .then(res => setTableData(res.data))
-    .catch((err) => setTableData(false))
+    getCustomersListForAgent()
+      .then((res) => { console.log(res); setTableData(res.data) })
+      .catch((err) => { console.log(err); setTableData(false) })
   }, [tableUpdated]);
 
   useEffect(() => {
     setLoading(true);
     if (pdfEmail) {
-      api.get(`http://localhost:8080/retrieveFile2?username=${pdfEmail}`,{withCredentials: true})
-      .then((res) => {
-        const pdfSrc = `data:application/pdf;base64,${res.data.data}`;
-        setPdfSrc(pdfSrc)
-        setLoading(false)
-        // document.querySelector('#frame').src = pdfSrc;
-      })
-      .catch((err) => {
-        setLoading(false);
-        alert("Error occured while fetching pdf");
-      })
+      api.get(`http://localhost:8080/retrieveFile2?email=${pdfEmail}`, { withCredentials: true })
+        .then((res) => {
+          const pdfSrc = `data:application/pdf;base64,${res.data.data}`;
+          setPdfSrc(pdfSrc)
+          setLoading(false)
+          // document.querySelector('#frame').src = pdfSrc;
+        })
+        .catch((err) => {
+          setLoading(false);
+          alert("Error occured while fetching pdf");
+        })
     }
   }, [pdfEmail])
 
@@ -74,7 +75,8 @@ const ReviewList = () => {
                   >
                     X
                   </button>
-                  {pdfSrc ? <Pdf pdfSrc={pdfSrc} setPdfSrc={setPdfSrc} /> : <div>Loading PDF...</div>}
+                  {pdfSrc ? <Pdf pdfSrc={pdfSrc} setPdfSrc={setPdfSrc} className="pdf" /> : <div>Loading PDF...</div>}
+              
                 </div>
               </div>
             </div>
@@ -86,7 +88,8 @@ const ReviewList = () => {
       <MaterialTable columns={columns} data={tableData} title="Customers Information"
         localization={{
           body: {
-            emptyDataSourceMessage: <FadeLoader color="#36d7b7" />
+            emptyDataSourceMessage:
+            <div style={{display:"flex",justifyContent:"center"}}> <FadeLoader color="#36d7b7" /></div>
           }
         }}
         editable={{
@@ -97,7 +100,7 @@ const ReviewList = () => {
             // setTimeout(() => resolve(), 500)]
             async function makePostRequest() {
               try {
-                api.post("http://localhost:8080/addCustomer", newRow , {withCredentials: true});
+                api.post("http://localhost:8080/addCustomer", newRow, { withCredentials: true });
                 // // By hook or crook i wanted to react know that table is updated
                 tableUpdated ? setTableUpdated(false) : setTableUpdated(true)
                 await resolve();
@@ -124,11 +127,9 @@ const ReviewList = () => {
             tooltip: "View Pdf",
             onClick: () => {
               setShowModal(true);
-
               // console.log(row);
               setPdfEmail(row.email);
             }
-
             // isFreeAction:true
           }
         }

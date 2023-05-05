@@ -8,16 +8,16 @@ const EmployeeList = () => {
   let [tableUpdated, setTableUpdated] = useState(false);
 
   const columns = [
-    { title: "Username", field: "username", filterPlaceholder: "filter" },
-    { title: "Role", field: "role", lookup: { 0: "Agent", 1: "Reviewer" }, filterPlaceholder: "filter" }, { title: "Mobile Number", field: "mono", filterPlaceholder: "filter" },
+    { title: "Username", field: "email", filterPlaceholder: "filter" },
+    { title: "Role", field: "role", lookup: { ROLE_AGENT: "Agent", ROLE_REVIEWER: "Reviewer",ROLE_ADMIN:"Admin" }, filterPlaceholder: "filter" }, 
+    { title: "Mobile Number", field: "mono", filterPlaceholder: "filter" },
   ]
 
   useEffect(() => {
     getAllEmployees()
-    .then((res) => {
-      setTableData(res.data);
-    }).catch((err) => {
-      setTableData(false); alert("Error occured")
+    .then((res) => {console.log(res); setTableData(res.data); })
+    .catch((err) => {setTableData(false); 
+      console.log("Error occured")
     })
   }, [tableUpdated]);
 

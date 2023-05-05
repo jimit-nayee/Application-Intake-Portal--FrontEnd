@@ -81,8 +81,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
 
     console.log(" pdf component mounted");
     // setPdf(pdfSrc)
-   
-  
+    // document.querySelector(".documentRef").addEventListner("scroll",()=>console.log("hello"))
     return ()=>{
           console.log(" pdf component unmounted");
           
@@ -94,7 +93,10 @@ function Pdf({pdfSrc,setPdfSrc}) {
   //componentDidUpdate()
   //componentWillUnmount()
   console.log("pdf component reloaded")
+ 
   
+
+ 
   return (
     <div>
       <div style={styles.container}>
@@ -146,7 +148,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
                 />
               ) : null}
             </div>
-            <div ref={documentRef} style={styles.documentBlock}>
+            <div ref={documentRef} style={styles.documentBlock} className="documentRef">
         
               {signatureURL ? (
                 <DraggableSignature
@@ -156,6 +158,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
                   }}
                   onSet={async () => {
                     const { originalHeight, originalWidth } = pageDetails;
+
                     const scale = originalWidth / documentRef.current.clientWidth;
 
                     const y =
@@ -171,6 +174,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
                       documentRef.current.offsetLeft;
 
                     // new XY in relation to actual document size
+                    
                     const newY =
                       (y * originalHeight) / documentRef.current.clientHeight;
                     const newX =
@@ -205,7 +209,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
                   onEnd={setPosition}
                 />
               ) : null}
-           { pdfSrc ?   <Document 
+           { pdfSrc ?   <Document className="document"
                 key={count}
                 file={pdfSrc} 
                 onLoadSuccess={(data) => {
@@ -218,14 +222,14 @@ function Pdf({pdfSrc,setPdfSrc}) {
                 <Page
                   pageNumber={pageNum + 1}
                   width={800}
-                  
+                  className="page"
                   onLoadSuccess={(data) => {
                     setPageDetails(data);
 
                   }}
                   renderTextLayer={false}
                   style={{
-                    height:"300px"
+                    height:"100px"
                   }}
                 />
               </Document>

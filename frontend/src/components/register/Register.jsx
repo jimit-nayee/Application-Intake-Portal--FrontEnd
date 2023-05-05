@@ -42,7 +42,7 @@ function Register() {
           className="form flex flex-col"
           onSubmit={handleSubmit(formSubmit)}
         >
-          <label htmlFor="Username">Username</label>
+          <label htmlFor="Username">Email</label>
           <input
             type="text"
             id="Username"

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const ProtectedRoute = (props) => {
   const navigate = useNavigate();
   useEffect(() => {
-    // let login = sessionStorage.getItem("login");
+     
     // if (!login) {
     //   navigate("/");
     // }

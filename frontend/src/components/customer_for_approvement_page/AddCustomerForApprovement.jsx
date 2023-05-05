@@ -6,12 +6,24 @@ import { useForm } from "react-hook-form";
 import { PulseLoader } from "react-spinners"
 import { Toaster, toast } from 'react-hot-toast';
 import { registerCustomerAPI, validateAPI } from '../../services/CustomerService';
+import api from '../../services/mainService';
 
 const err = (e) => toast.error(e)
 const success = (e) => toast.success(e)
 let fileData = { file: "" }
 
 function AddCustomerForApprovement() {
+
+  useEffect(() => {
+    alert("hello")
+    api.get("http://localhost:8080/csrf", { withCredentials: true })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   let [details, setDetails] = useState({ email: "", fname: "", lname: "", address: "", state: "", city: "" });
   let [fnameCheckmark, setFnameCheckmark] = useState("none");

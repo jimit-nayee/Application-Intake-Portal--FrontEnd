@@ -1,8 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import Navbar from "../navbar/Navbar"
+import { Outlet } from 'react-router-dom'
+import api from '../../services/mainService';
+
+
 
 const ReviewerPage = () => {
+
+    const navigation = [
+        { name: 'Show List', href: 'list', current: true },
+        { name: 'Add', href: 'add', current: false },
+      ]
   return (
-    <div>ReviewerPage</div>
+    <>
+    
+   <Navbar navigation={navigation}/>
+   
+     <Outlet/>
+    </>
   )
 }
 
