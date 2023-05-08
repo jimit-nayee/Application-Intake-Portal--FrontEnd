@@ -8,9 +8,10 @@ import PagingControl from "./components/PagingControl";
 import { AddSigDialog } from "./components/AddSigDialog";
 import { BigButton } from "./components/BigButton";
 import DraggableSignature from "./components/DraggableSignature";
-import DraggableText from "./components/DraggableText";
+
 import dayjs from "dayjs";
 import axios from "axios";
+import './CustomScrollbar.css'; // Import your custom scrollbar styles
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -27,7 +28,7 @@ function downloadURI(uri) {
 function Pdf({pdfSrc,setPdfSrc}) {
   const styles = {
     container: {
-      maxWidth: 900, 
+      maxWidth: 640, 
       height:"100px",
       margin: "0 auto",
  
@@ -44,10 +45,12 @@ function Pdf({pdfSrc,setPdfSrc}) {
       top:"50%"
     },
     controls: {
-      maxWidth: 800,
+      maxWidth: 640,
+      padding:20,
       background:"white",
       display:"flex", 
-      margin: "0 auto",
+      justifyContent:"space-between",
+      paddingRight:80,
       marginTop: 8,
       zIndex:"1000"
     },
@@ -71,6 +74,9 @@ function Pdf({pdfSrc,setPdfSrc}) {
   const documentRef = useRef(null);
  const [count,setCount]=useState(0)
 
+useEffect(()=>{
+  console.log("position",position)
+},[position])
 
   useEffect(()=>{
     // axios.get("http://localhost:8080/retrieveFile2?username=dwarkesh@gmail.com").then((res)=>{
@@ -80,6 +86,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
     // })
 
     console.log(" pdf component mounted");
+  
     // setPdf(pdfSrc)
     // document.querySelector(".documentRef").addEventListner("scroll",()=>console.log("hello"))
     return ()=>{
@@ -89,12 +96,15 @@ function Pdf({pdfSrc,setPdfSrc}) {
     
   },[])
 
+
   //componentDidMount()
   //componentDidUpdate()
   //componentWillUnmount()
   console.log("pdf component reloaded")
  
-  
+  // console.log(yScrolled)
+  console.log("page details ",pageDetails)
+    
 
  
   return (
@@ -106,10 +116,37 @@ function Pdf({pdfSrc,setPdfSrc}) {
             autoDate={autoDate}
             setAutoDate={setAutoDate}
             onClose={() => setSignatureDialogVisible(false)}
-            onConfirm={(url) => {
+            onConfirm={async (url) => {
+              // alert("confirmed")
               setSignatureURL(url);
               setSignatureDialogVisible(false);
-            }}
+              const { originalHeight, originalWidth } = pageDetails;
+                   
+              const scale = originalWidth / documentRef.current.clientWidth;
+              
+                 // const newX=x/1.625; //650 //1.625
+                 // const newY=y/3.82 + yScrolled/3.82; //898 //3.82
+               const pdfDoc = await PDFDocument.load(pdfSrc); //appending signature here
+               const pages = pdfDoc.getPages();
+               const firstPage = pages[pageNum];
+
+               const pngImage = await pdfDoc.embedPng(signatureURL);
+               console.log(signatureURL);
+               const pngDims = pngImage.scale( scale * .3);
+               firstPage.drawImage(pngImage, {
+                x: 0,
+                y: 100,
+                width: pngDims.width,
+                height: pngDims.height,
+              });
+
+              const pdfBytes = await pdfDoc.save();
+              const blob = new Blob([new Uint8Array(pdfBytes)]);
+
+              const URL = await blobToURL(blob);
+              
+
+              }}
           />
         ) : null}
 
@@ -118,6 +155,8 @@ function Pdf({pdfSrc,setPdfSrc}) {
         {pdfSrc ? (
           <div>
             <div style={styles.controls}>
+              <div>
+
               {!signatureURL ? (
                 <BigButton
                   marginRight={8}
@@ -137,11 +176,13 @@ function Pdf({pdfSrc,setPdfSrc}) {
               
                 }}
               />
+
+             </div>
               {pdfSrc ? (
                 <BigButton
                   marginRight={8}
                   inverted={true}
-                  title={"Download"}
+                  title={"Save"}
                   onClick={() => {
                     downloadURI(pdfSrc);
                   }}
@@ -158,9 +199,9 @@ function Pdf({pdfSrc,setPdfSrc}) {
                   }}
                   onSet={async () => {
                     const { originalHeight, originalWidth } = pageDetails;
-
+                   
                     const scale = originalWidth / documentRef.current.clientWidth;
-
+                    
                     const y =
                       documentRef.current.clientHeight -
                       (position.y -
@@ -172,14 +213,17 @@ function Pdf({pdfSrc,setPdfSrc}) {
                       160 -
                       position.offsetX -
                       documentRef.current.offsetLeft;
+                      console.log("x",x,"y",y)
 
+               
                     // new XY in relation to actual document size
-                    
+                  
                     const newY =
-                      (y * originalHeight) / documentRef.current.clientHeight;
+                     ( (y * originalHeight) / documentRef.current.clientHeight) ;
                     const newX =
-                      ((x * originalWidth) / documentRef.current.clientWidth)-265;
-
+                      ((x * originalWidth) / documentRef.current.clientWidth);
+                      // const newX=x/1.625; //650 //1.625
+                      // const newY=y/3.82 + yScrolled/3.82; //898 //3.82
                     const pdfDoc = await PDFDocument.load(pdfSrc); //appending signature here
 
                     const pages = pdfDoc.getPages();
@@ -190,8 +234,8 @@ function Pdf({pdfSrc,setPdfSrc}) {
                     const pngDims = pngImage.scale( scale * .3);
 
                     firstPage.drawImage(pngImage, {
-                      x: newX,
-                      y: newY,
+                      x: 0,
+                      y: 100,
                       width: pngDims.width,
                       height: pngDims.height,
                     });
@@ -203,13 +247,13 @@ function Pdf({pdfSrc,setPdfSrc}) {
 
                     const URL = await blobToURL(blob);
                     setPdfSrc(URL);
-                    setPosition(null);
+                    // setPosition(null);
                     setSignatureURL(null);
                   }}
                   onEnd={setPosition}
                 />
               ) : null}
-           { pdfSrc ?   <Document className="document"
+           { pdfSrc ?   <Document className="document" 
                 key={count}
                 file={pdfSrc} 
                 onLoadSuccess={(data) => {

@@ -10,17 +10,18 @@ import Pdf from '../../pdf/Pdf';
 import api from '../../services/mainService';
 import { tr } from 'date-fns/locale';
 import { getListOfCutomerForReview } from '../../services/CustomerForReviewService';
+import CloseIcon from '@mui/icons-material/Close';
+import './CustomScrollbar.css'; // Import your custom scrollbar styles
 
 const ReviewList = () => {
 
   const [showModal, setShowModal] = React.useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [pdfEmail, setPdfEmail] = useState(false);
-  const [pdfChanged, setPdfChanged] = useState(false);
   const [tableData, setTableData] = useState([])
   let [tableUpdated, setTableUpdated] = useState(false);
   const [pdfSrc, setPdfSrc] = useState();
-
+  const [yScrolled,setYScrolled]=useState(0);
   const columns = [
     { title: "Email", field: "email", sorting: true, filtering: true, headerStyle: { color: "#fff" } },
     { title: "First Namer", field: "fname", filterPlaceholder: "filter" },
@@ -38,8 +39,10 @@ const ReviewList = () => {
   }, [tableUpdated]);
 
   useEffect(() => {
+
     setLoading(true);
     if (pdfEmail) {
+      setPdfSrc(null)
       api.get(`http://localhost:8080/retrieveFile2?email=${pdfEmail}`, { withCredentials: true })
         .then((res) => {
           const pdfSrc = `data:application/pdf;base64,${res.data.data}`;
@@ -60,10 +63,11 @@ const ReviewList = () => {
 
         {showModal ? (
           <>
-            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-            <div className="flex overflow-y-auto fixed inset-0 z-50 outline-none overflow-x-hidden focus:outline-none">
-              <div className="relative w-auto mx-auto max-w-3xl">
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div className="opacity-25 fixed inset-0 z-40 bg-black  "></div>
+            {/* <div className="flex overflow-y-auto fixed inset-0 z-50 outline-none overflow-x-hidden focus:outline-none pdfDiv " onScroll={(e)=>{setYScrolled(e.target.scrollTop)}}> */}
+            <div className="flex overflow-y-auto fixed inset-0 z-50 outline-none overflow-x-hidden focus:outline-none pdfDiv " >
+              <div className="relative w-auto mx-auto max-w-3xl ">
+                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none ">
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mt-1 absolute right-0"
                     type="button"
@@ -73,9 +77,9 @@ const ReviewList = () => {
                     }
                     }
                   >
-                    X
+                    <CloseIcon style={{background:"red",color:"white"}}/>
                   </button>
-                  {pdfSrc ? <Pdf pdfSrc={pdfSrc} setPdfSrc={setPdfSrc} className="pdf" /> : <div>Loading PDF...</div>}
+                  {pdfSrc ? <Pdf pdfSrc={pdfSrc} setPdfSrc={setPdfSrc} className="pdf"/> : <div>Loading PDF...</div>}
               
                 </div>
               </div>
@@ -89,7 +93,7 @@ const ReviewList = () => {
         localization={{
           body: {
             emptyDataSourceMessage:
-            <div style={{display:"flex",justifyContent:"center"}}> <FadeLoader color="#36d7b7" /></div>
+           "No Records To Display" 
           }
         }}
         editable={{
@@ -129,6 +133,7 @@ const ReviewList = () => {
               setShowModal(true);
               // console.log(row);
               setPdfEmail(row.email);
+              
             }
             // isFreeAction:true
           }

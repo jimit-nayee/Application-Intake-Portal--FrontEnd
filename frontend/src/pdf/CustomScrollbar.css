@@ -1,0 +1,19 @@
+.pdf-wrapper {
+    height: 500px; /* set the height of the wrapper div */
+    overflow-y: scroll; /* add vertical scrollbar */
+  }
+  
+  /* Custom scrollbar styles */
+  .pdf-wrapper::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .pdf-wrapper::-webkit-scrollbar-thumb {
+    background-color: red;
+    border-radius: 10px;
+  }
+  
+  .pdf-wrapper::-webkit-scrollbar-track {
+    background-color: red;
+  }
+  

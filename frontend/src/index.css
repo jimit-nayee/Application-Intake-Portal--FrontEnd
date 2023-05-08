@@ -32,3 +32,12 @@ input:disabled {
     height:0 !important;
   
 }
+.react-pdf__Page__annotations.annotationLayer
+{
+    width: 100%;
+}
+
+.react-pdf__Document.document{
+    display: flex;
+    justify-content: center;
+}

@@ -7,14 +7,11 @@ import { FadeLoader } from 'react-spinners';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useTabContext } from '@mui/lab';
 
-
 const AgentCustomerList = () => {
 
   const [showModal, setShowModal] = React.useState(false);
   const [loading,setLoading]=useState(true);
-  const [pdfEmail,setPdfEmail]=useState(false);
-  
-  
+  const [pdfEmail,setPdfEmail]=useState(false);  
   const [tableData, setTableData] = useState([])
   let [tableUpdated,setTableUpdated]=useState(false);
   const [pdfSrc,setPdfSrc]=useState();
@@ -22,9 +19,7 @@ const AgentCustomerList = () => {
   const columns = [
     { title: "Email", field:"email", sorting: true, filtering: true, headerStyle: { color: "#fff" } },
     { title: "First Namer", field: "fname", filterPlaceholder: "filter" },
-    {
-      title: "Last Name", field: "lname"
-    },
+    { title: "Last Name", field: "lname" },
     { title: "Address", field: "address"},
     { title: "City", field: "city",filterPlaceholder:"filter" },
     { title: "State", field: "state",
