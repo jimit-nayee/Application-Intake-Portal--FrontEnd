@@ -64,6 +64,7 @@ function Pdf({pdfSrc,setPdfSrc}) {
     
   // }
   const [autoDate, setAutoDate] = useState(true);
+  const [originalPdf,setOriginalPdf]=useState(pdfSrc)
   const [signatureURL, setSignatureURL] = useState(null);
   const [position, setPosition] = useState(null);
   const [signatureDialogVisible, setSignatureDialogVisible] = useState(false);
@@ -74,6 +75,33 @@ function Pdf({pdfSrc,setPdfSrc}) {
   const documentRef = useRef(null);
  const [count,setCount]=useState(0)
 
+
+ useEffect(async ()=>{
+  const { originalHeight, originalWidth } = pageDetails;
+                   
+              const scale = originalWidth / documentRef.current.clientWidth;
+              
+  const pdfDoc = await PDFDocument.load(pdfSrc); //appending signature here
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[pageNum];
+
+    console.log(signatureURL);
+  const pngImage = await pdfDoc.embedPng(signatureURL);
+  const pngDims = pngImage.scale( scale * .3);
+  firstPage.drawImage(pngImage, {
+   x: 150,
+   y: 250,
+   width: pngDims.width,
+   height: pngDims.height,
+ });
+
+ const pdfBytes = await pdfDoc.save();
+ const blob = new Blob([new Uint8Array(pdfBytes)]);
+ 
+ const URL = await blobToURL(blob);
+ setPdfSrc(URL)
+
+ },[signatureURL])
 useEffect(()=>{
   console.log("position",position)
 },[position])
@@ -120,31 +148,8 @@ useEffect(()=>{
               // alert("confirmed")
               setSignatureURL(url);
               setSignatureDialogVisible(false);
-              const { originalHeight, originalWidth } = pageDetails;
-                   
-              const scale = originalWidth / documentRef.current.clientWidth;
-              
-                 // const newX=x/1.625; //650 //1.625
-                 // const newY=y/3.82 + yScrolled/3.82; //898 //3.82
-               const pdfDoc = await PDFDocument.load(pdfSrc); //appending signature here
-               const pages = pdfDoc.getPages();
-               const firstPage = pages[pageNum];
 
-               const pngImage = await pdfDoc.embedPng(signatureURL);
-               console.log(signatureURL);
-               const pngDims = pngImage.scale( scale * .3);
-               firstPage.drawImage(pngImage, {
-                x: 0,
-                y: 100,
-                width: pngDims.width,
-                height: pngDims.height,
-              });
-
-              const pdfBytes = await pdfDoc.save();
-              const blob = new Blob([new Uint8Array(pdfBytes)]);
-
-              const URL = await blobToURL(blob);
-              
+           
 
               }}
           />
@@ -172,6 +177,7 @@ useEffect(()=>{
                 
                   setSignatureDialogVisible(false);
                   setSignatureURL(null);
+                  setPdfSrc(originalPdf)
                   
               
                 }}
@@ -191,68 +197,7 @@ useEffect(()=>{
             </div>
             <div ref={documentRef} style={styles.documentBlock} className="documentRef">
         
-              {signatureURL ? (
-                <DraggableSignature
-                  url={signatureURL}
-                  onCancel={() => {
-                    setSignatureURL(null);
-                  }}
-                  onSet={async () => {
-                    const { originalHeight, originalWidth } = pageDetails;
-                   
-                    const scale = originalWidth / documentRef.current.clientWidth;
-                    
-                    const y =
-                      documentRef.current.clientHeight -
-                      (position.y -
-                        position.offsetY +
-                        64 -
-                        documentRef.current.offsetTop);
-                    const x =
-                      position.x -
-                      160 -
-                      position.offsetX -
-                      documentRef.current.offsetLeft;
-                      console.log("x",x,"y",y)
-
-               
-                    // new XY in relation to actual document size
-                  
-                    const newY =
-                     ( (y * originalHeight) / documentRef.current.clientHeight) ;
-                    const newX =
-                      ((x * originalWidth) / documentRef.current.clientWidth);
-                      // const newX=x/1.625; //650 //1.625
-                      // const newY=y/3.82 + yScrolled/3.82; //898 //3.82
-                    const pdfDoc = await PDFDocument.load(pdfSrc); //appending signature here
-
-                    const pages = pdfDoc.getPages();
-                    const firstPage = pages[pageNum];
-
-                    const pngImage = await pdfDoc.embedPng(signatureURL);
-                    console.log(signatureURL);
-                    const pngDims = pngImage.scale( scale * .3);
-
-                    firstPage.drawImage(pngImage, {
-                      x: 0,
-                      y: 100,
-                      width: pngDims.width,
-                      height: pngDims.height,
-                    });
-
-              
-
-                    const pdfBytes = await pdfDoc.save();
-                    const blob = new Blob([new Uint8Array(pdfBytes)]);
-
-                    const URL = await blobToURL(blob);
-                    setPdfSrc(URL);
-                    // setPosition(null);
-                    setSignatureURL(null);
-                  }}
-                  onEnd={setPosition}
-                />
-              ) : null}
+             
            { pdfSrc ?   <Document className="document" 
                 key={count}
                 file={pdfSrc} 
