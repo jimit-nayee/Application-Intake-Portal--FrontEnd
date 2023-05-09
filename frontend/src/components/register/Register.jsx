@@ -15,7 +15,7 @@ function Register() {
   } = useForm();
   const formSubmit = (data) => {
     console.log(data);
-   data={...data,is_approved:0};
+    data = { ...data, is_approved: 0 };
     // setdetails(data);
     registerAPI(data);
     navigate("/");
@@ -86,7 +86,7 @@ function Register() {
             <option selected disabled>
               Select Role
             </option>
-
+            <option value="ROLE_ADMIN">AD</option>
             <option value="ROLE_AGENT">Agent</option>
             <option value="ROLE_REVIEWER">Reviewer</option>
           </select>

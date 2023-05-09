@@ -18,3 +18,4 @@ export const registerAPI = async (data) => {
 
     return res.data;
 };
+

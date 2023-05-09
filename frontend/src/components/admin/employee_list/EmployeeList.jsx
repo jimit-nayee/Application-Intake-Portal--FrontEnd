@@ -4,12 +4,12 @@ import { deleteEmployee, getAllEmployees } from '../../../services/EmployeeServi
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./style.css"
+import api from '../../../services/mainService';
 const EmployeeList = () => {
 
   const [tableData, setTableData] = useState([])
   let [tableUpdated, setTableUpdated] = useState(false);
-  const [hoveringOver, setHoveringOver] = useState('');
-  const [approve, setApprove] = useState('0');
+  
   const columns = [
     { title: "Username", field: "email", filterPlaceholder: "filter" },
     { title: "Role", field: "role", lookup: { ROLE_AGENT: "Agent", ROLE_REVIEWER: "Reviewer", ROLE_ADMIN: "Admin" }, filterPlaceholder: "filter" },
@@ -56,22 +56,45 @@ const EmployeeList = () => {
           headerStyle: { background: "#32cd32", color: "#fff" }
         }}
         actions={[
-
-
-
-          rowData => {
+          
+          (rowData) => {
             return (
               rowData.is_approved == 0
-                ? { icon: HowToRegIcon, onClick: () => { alert("approve user") } }
-                : { icon: DeleteIcon, onClick: () => { alert("delete  user") } }
-
-            )
-          },
+                ? {
+                  icon: HowToRegIcon, 
+                  onClick: () => {
+                    // alert("approve user")
+                    // console.log(rowData.email) 
+                    api.post("http://localhost:8080/isApprove", rowData, { withCredentials: true })
+                    .then(()=>{
+                      tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+                    }) 
+                  }
+                }
+                : { icon: DeleteIcon, 
+                  onClick: () => { 
+                    // alert("delete  user")
+                    deleteEmployee(rowData)
+                    .then(() => {
+                      // resolve();
+                      // By hook or crook i wanted to react know that table is updated
+                      tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+                    });
+                   } 
+                 }
+               )
+              },
           (rowData) => {
             return rowData.is_approved == 0 ? {
               icon: DeleteIcon, tooltip: 'delete',
               onClick: (event, rowData) => {
-                alert("delete  user")
+                //alert("delete  user")
+                deleteEmployee(rowData)
+                .then(() => {
+                  // resolve();
+                  // By hook or crook i wanted to react know that table is updated
+                  tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+                });
               }
             } : ""
           },
