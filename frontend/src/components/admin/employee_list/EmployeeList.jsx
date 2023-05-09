@@ -14,7 +14,8 @@ const EmployeeList = () => {
     { title: "Username", field: "email", filterPlaceholder: "filter" },
     { title: "Role", field: "role", lookup: { ROLE_AGENT: "Agent", ROLE_REVIEWER: "Reviewer", ROLE_ADMIN: "Admin" }, filterPlaceholder: "filter" },
     { title: "Mobile Number", field: "mono", filterPlaceholder: "filter" },
-    { title: "Status", field: "is_approved", filterPlaceholder: "filter", lookup: { 0: "Pending", 1: "Approved" } },
+    { title: "Status", field: "is_approved", filterPlaceholder: "filter", lookup: { 0:
+    <h1 style={{"color":"red","fontWeight":"bold"}}> Pending</h1>, 1:  <h1 style={{"color":"green","fontWeight":"bold"}}> Approved</h1> } },
   ]
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const EmployeeList = () => {
           headerStyle: { background: "#32cd32", color: "#fff" }
         }}
         actions={[
-          
+         
           (rowData) => {
             return (
               rowData.is_approved == 0

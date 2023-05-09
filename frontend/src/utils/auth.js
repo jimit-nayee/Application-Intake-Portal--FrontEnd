@@ -6,14 +6,18 @@ const AuthContext=createContext(null);
 
 export const AuthProvider=({children})=>{
   const [user,setUser]=useState(null);
+  const [xsrfToken,setXsrfToken]=useState(null)
   const navigate=useNavigate();
-  const login=user=>{
+  const login=(user,xsrf)=>{
     setUser(user)
+    setXsrfToken(xsrf)
+    
     // alert("user is set");
   }
   const logout=()=>{
     setUser(null)
     Cookies.remove("token")
+    setXsrfToken(null)
     window.location.href="/"
     // alert("getting logged out")
     
