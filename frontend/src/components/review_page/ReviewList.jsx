@@ -153,7 +153,7 @@ const ReviewList = () => {
           // }),
           grouping: true, columnsButton: true,
           rowStyle: (data, index) => index % 2 === 0 ? { background: "#f5f5f5" } : null,
-          headerStyle: { background: "#e879f9", color: "#fff" }
+          headerStyle: { background: "#32cd32", color: "#fff" }
         }}
 
         icons={{ Add: () => <AddIcon /> }} />

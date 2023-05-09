@@ -144,7 +144,7 @@ function AddCustomerForApprovement() {
 
                     </div>
                   </div>
-                  <div className='px-4 text-violet-500'>
+                  <div className='px-4 text-lime-700'>
                     Application Progress 1
                   </div>
                 </div>
@@ -160,7 +160,7 @@ function AddCustomerForApprovement() {
 
                     </div>
                   </div>
-                  <div className='flex justify-center w-full text-violet-500'>
+                  <div className='flex justify-center w-full text-lime-700'>
                     Application Progress 2
                   </div>
                 </div>
@@ -176,7 +176,7 @@ function AddCustomerForApprovement() {
 
                     </div>
                   </div>
-                  <div className='flex justify-center w-full text-violet-500'>
+                  <div className='flex justify-center w-full text-lime-700'>
                     Application Progress 3
                   </div>
                 </div>
@@ -187,11 +187,11 @@ function AddCustomerForApprovement() {
 
                     </div>
                     <div className='rounded-full border-2  border-black border-solid flex justify-center' style={{ width: "30px" }} >
-                      3
+                      4
                     </div>
                   </div>
-                  <div className='flex justify-center w-full text-violet-500'>
-                    Application Progress 3
+                  <div className='flex justify-center w-full text-lime-700'>
+                    Application Progress 4
                   </div>
                 </div>
               </div>
@@ -200,7 +200,7 @@ function AddCustomerForApprovement() {
             <form id="form" action="" onSubmit={handleSubmit(formSubmit)} >
               <div className="bottom mt-10 px-8 py-4 flex flex-col shadow-md  gap-2 md:flex-row sm:flex-row   ">
                 <div className="left w-1/2 sm:w-full ">
-                  <div className="heading px-2 bg-gray-100 text-violet-400 text-bold">
+                  <div className="heading px-2 bg-gray-100 text-lime-700 text-bold">
                     <h2>Enter the follwing details</h2>
                   </div>
                   <div className="form " style={{ width: "80%" }}>
@@ -278,7 +278,7 @@ function AddCustomerForApprovement() {
 
                 <div className="right w-1/2 sm:w-full">
                   <div className=''>
-                    <div className="heading px-2 bg-gray-100 text-violet-400 text-bold">
+                    <div className="heading px-2 bg-gray-100 text-lime-700 text-bold">
                       <h2>File to upload</h2>
                     </div>
                     <div className='flex flex-col items-center mt-5'>
@@ -292,13 +292,14 @@ function AddCustomerForApprovement() {
                         <div className="upload-btn ">
                           {file ? (
                             <>
-                              <label className='w-full bg-transparent hover:bg-violet-500 text-violet-500 hover:text-white font-semibold py-2 px-4 border border-orange-500 hover:border-transparent rounded' onClick={handleViewClick}>View</label>
-                              <label className='w-full bg-transparent hover:bg-violet-500 text-violet-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded'>
+                              <label className='w-full bg-transparent hover:bg-lime-700 text-lime-700 hover:text-white font-semibold py-2 px-4  border border-lime-700 hover:border-transparent rounded' onClick={handleViewClick}>View</label>
+                              &nbsp; &nbsp;
+                              <label className='w-full bg-transparent hover:bg-lime-700 text-lime-700 font-semibold hover:text-white py-2 px-4 border border-lime-700 hover:border-transparent rounded'>
                                 Change <input type="file" size="60" style={{ display: "none", width: "100%", heigth: "100%" }} accept=".pdf" onChange={handleFileChange} id="file" />
                               </label>
                             </>
                           ) : (
-                            <label className='w-full bg-transparent hover:bg-violet-500 text-violet-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded '>
+                            <label className='w-full bg-transparent hover:bg-lime-700 text-lime-700 font-semibold hover:text-white py-2 px-4  border border-lime-700 hover:border-transparent rounded '>
                               Upload <input type="file" size="60" style={{ display: "none", width: "100%", heigth: "100%" }} accept=".pdf" onChange={handleFileChange} id="file" />
                             </label>
                           )}

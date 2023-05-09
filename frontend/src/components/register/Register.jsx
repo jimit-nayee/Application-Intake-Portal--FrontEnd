@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import home_page from "../../images/home_page.jpg";
-import { registerAPI } from "../../services/AuthorizationService";
+import { registerAPI } from "../../services/EmployeeService";
 
 
 function Register() {
@@ -15,6 +15,7 @@ function Register() {
   } = useForm();
   const formSubmit = (data) => {
     console.log(data);
+   data={...data,is_approved:0};
     // setdetails(data);
     registerAPI(data);
     navigate("/");
@@ -86,7 +87,6 @@ function Register() {
               Select Role
             </option>
 
-            <option value="ROLE_ADMIN">Admin</option>
             <option value="ROLE_AGENT">Agent</option>
             <option value="ROLE_REVIEWER">Reviewer</option>
           </select>

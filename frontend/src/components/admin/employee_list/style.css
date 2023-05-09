@@ -1,0 +1,6 @@
+.MuiTableCell-root.MuiTableCell-body.MuiTableCell-paddingNone
+{
+    display: flex;
+    justify-content: right;
+    margin-top: 7px;
+}

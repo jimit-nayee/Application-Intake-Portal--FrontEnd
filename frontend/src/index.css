@@ -5,19 +5,17 @@
 input:disabled {
 
     cursor: not-allowed;
-    opacity: .6;
-    
-    
+    opacity: .6;   
 }
 
 .navlink{
     padding: 10px 20px;
-    color:white
+    color:limegreen
 }
 .navlink.active{
     background-color: white;
     
-    color:violet;
+    color:limegreen;
     border-radius: 10px;
     
 }
@@ -41,3 +39,4 @@ input:disabled {
     display: flex;
     justify-content: center;
 }
+
