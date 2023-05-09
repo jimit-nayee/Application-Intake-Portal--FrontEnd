@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { FadeLoader } from 'react-spinners';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useTabContext } from '@mui/lab';
+import Cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
+import api from '../../../services/mainService';
 
 const AgentCustomerList = () => {
 
@@ -26,23 +29,24 @@ const AgentCustomerList = () => {
      headerStyle: { color: "#fff" } },
   ]
   
-function handler(pdf) {
-  const pdfSrc = `data:application/pdf;base64,${pdf}`;
-      // document.querySelector('#frame').src = pdfSrc;
-      // document.querySelector('#frame2').src = pdfSrc;
-      setPdfSrc(pdfSrc)
-}
+
 
   useEffect(() => {
-      axios.get("http://localhost:8080/getCustomersListForAgent?email=shrimaliparth1@gmail.com")
+   let agentEmail= jwtDecode(Cookies.get("token")).sub ;
+    //  alert(agentEmail)
+      api.get(`http://localhost:8080/getCustomersListForAgent/${agentEmail}`)
       .then(res => setTableData(res.data))
       .catch((err)=>setTableData(false))
   },[tableUpdated]);
 
   useEffect(()=>{
     if(pdfEmail)
-       axios.get(`http://localhost:8080/retrieveFile2?username=${pdfEmail}`).then((res)=>{
-      handler(res.data.data);
+      // alert(pdfEmail)
+       api.get(`http://localhost:8080/retrieveFile2?email=${pdfEmail}`).then((res)=>{
+        const pdfSrc = `data:application/pdf;base64,${res.data.data}`;
+        // document.querySelector('#frame').src = pdfSrc;
+        // document.querySelector('#frame2').src = pdfSrc;
+        setPdfSrc(pdfSrc)
       setLoading(false)
   }).catch((err)=>{
     setLoading(false);

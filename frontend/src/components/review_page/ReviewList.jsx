@@ -21,6 +21,7 @@ const ReviewList = () => {
   const [tableData, setTableData] = useState([])
   let [tableUpdated, setTableUpdated] = useState(false);
   const [pdfSrc, setPdfSrc] = useState();
+  const [componentUpdated,setComponentUpdated]=useState(false)
   const [yScrolled,setYScrolled]=useState(0);
   const columns = [
     { title: "Email", field: "email", sorting: true, filtering: true, headerStyle: { color: "#fff" } },
@@ -43,11 +44,14 @@ const ReviewList = () => {
     setLoading(true);
     if (pdfEmail) {
       setPdfSrc(null)
+      
       api.get(`http://localhost:8080/retrieveFile2?email=${pdfEmail}`, { withCredentials: true })
         .then((res) => {
           const pdfSrc = `data:application/pdf;base64,${res.data.data}`;
           setPdfSrc(pdfSrc)
           setLoading(false)
+          
+          setShowModal(true);
           // document.querySelector('#frame').src = pdfSrc;
         })
         .catch((err) => {
@@ -55,7 +59,7 @@ const ReviewList = () => {
           alert("Error occured while fetching pdf");
         })
     }
-  }, [pdfEmail])
+  }, [pdfEmail,componentUpdated])
 
   return (
     <div style={{ postion: "relative", }}>
@@ -72,8 +76,11 @@ const ReviewList = () => {
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mt-1 absolute right-0"
                     type="button"
                     onClick={() => {
-                      // setPdfSrc(null);
-                      setShowModal(false)
+                    
+                        setPdfSrc(null);
+                        setShowModal(false)
+                     
+
                     }
                     }
                   >
@@ -130,10 +137,10 @@ const ReviewList = () => {
             icon: () => <VisibilityOutlinedIcon />,
             tooltip: "View Pdf",
             onClick: () => {
-              setShowModal(true);
               // console.log(row);
+  
               setPdfEmail(row.email);
-              
+              componentUpdated ? setComponentUpdated(false):setComponentUpdated(true)
             }
             // isFreeAction:true
           }

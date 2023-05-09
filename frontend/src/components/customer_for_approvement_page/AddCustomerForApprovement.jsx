@@ -9,6 +9,7 @@ import { registerCustomerAPI, validateAPI } from '../../services/CustomerService
 import api from '../../services/mainService';
 import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
+// import { Toast } from 'react-toastify/dist/components';
 
 const err = (e) => toast.error(e)
 const success = (e) => toast.success(e)
@@ -105,7 +106,7 @@ function AddCustomerForApprovement() {
     }
     setSubmitting(true);
     console.log(data)
-    alert(jwtDecode(Cookies.get("token")).sub)
+    // alert(jwtDecode(Cookies.get("token")).sub)
     registerCustomerAPI({ ...data, approvemntStatus: approvemntStatus, addedBy: jwtDecode(Cookies.get("token")).sub }).then((res) => {
       setSubmitting(false)
 
@@ -117,6 +118,9 @@ function AddCustomerForApprovement() {
       } else {
         setCustomerFound(false)
       }
+    }).catch((err)=>{
+      toast.error("failed to add customer")
+      setSubmitting(false)
     });
   };
 
