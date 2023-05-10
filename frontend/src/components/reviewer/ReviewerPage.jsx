@@ -9,14 +9,25 @@ import { useAuth } from '../../utils/auth';
 
 
 const ReviewerPage = () => {
-
+  if((Cookies.get('token'))==null)
+  window.location.href="/"
   const auth = useAuth()
 
-  let token = (Cookies.get("token"));
-  const [reviewer, setReviewer] = useState(false)
 
+  const [reviewer, setReviewer] = useState(false)
+  let user = {};
+  let userMail = ""
+  let userRole = ""
+  try {
+    user = jwtDecode(Cookies.get('token'));
+    userMail = user.sub;
+    userRole = user.authorities.substring(5).charAt(0).toUpperCase() + user.authorities.substring(6).toLowerCase();
+  } catch {
+    window.location.href = "/"
+  }
   useEffect(() => {
-    auth.userMail!=null ? (auth.userRole=="ROLE_REVIEWER" ? setReviewer(true): window.location.href="/"):window.location.href="/" 
+    // alert(userRole)
+    userMail != null ? (userRole == "Reviewer" ? setReviewer(true) : window.location.href = "/") : window.location.href = "/"
 
   }, [])
   const navigation = [

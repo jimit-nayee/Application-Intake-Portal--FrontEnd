@@ -5,17 +5,23 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./style.css"
 import api from '../../../services/mainService';
+import { ToastContainer } from 'react-toastify';
+import { Toaster, toast,error } from 'react-hot-toast';
 const EmployeeList = () => {
 
   const [tableData, setTableData] = useState([])
   let [tableUpdated, setTableUpdated] = useState(false);
-  
+
   const columns = [
     { title: "Username", field: "email", filterPlaceholder: "filter" },
     { title: "Role", field: "role", lookup: { ROLE_AGENT: "Agent", ROLE_REVIEWER: "Reviewer", ROLE_ADMIN: "Admin" }, filterPlaceholder: "filter" },
     { title: "Mobile Number", field: "mono", filterPlaceholder: "filter" },
-    { title: "Status", field: "is_approved", filterPlaceholder: "filter", lookup: { 0:
-    <h1 style={{"color":"red","fontWeight":"bold"}}> Pending</h1>, 1:  <h1 style={{"color":"green","fontWeight":"bold"}}> Approved</h1> } },
+    {
+      title: "Status", field: "is_approved", filterPlaceholder: "filter", lookup: {
+        0:
+          <h1 style={{ "color": "red", "fontWeight": "bold" }}> Pending</h1>, 1: <h1 style={{ "color": "green", "fontWeight": "bold" }}> Approved</h1>
+      }
+    },
   ]
 
   useEffect(() => {
@@ -29,6 +35,10 @@ const EmployeeList = () => {
 
   return (
     <>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
       <MaterialTable columns={columns} data={tableData} title="Customers Information"
         editable={{
           // onRowDelete: (selectedRow) => new Promise((resolve, reject) => {
@@ -57,45 +67,53 @@ const EmployeeList = () => {
           headerStyle: { background: "#32cd32", color: "#fff" }
         }}
         actions={[
-         
+
           (rowData) => {
             return (
               rowData.is_approved == 0
                 ? {
-                  icon: HowToRegIcon, 
+                  icon: HowToRegIcon,
                   onClick: () => {
                     // alert("approve user")
                     // console.log(rowData.email) 
                     api.post("http://localhost:8080/isApprove", rowData, { withCredentials: true })
-                    .then(()=>{
-                      tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
-                    }) 
+                      .then(() => {
+                        toast.success(" Successfully Approved")
+                        // alert("success")
+                        tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+
+                      })
                   }
                 }
-                : { icon: DeleteIcon, 
-                  onClick: () => { 
+                : {
+                  icon: DeleteIcon,
+                  onClick: () => {
                     // alert("delete  user")
                     deleteEmployee(rowData)
-                    .then(() => {
-                      // resolve();
-                      // By hook or crook i wanted to react know that table is updated
-                      tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
-                    });
-                   } 
-                 }
-               )
-              },
+                      .then(() => {
+                        // resolve();
+                    toast.error("Deleted Successfully")
+
+                        // By hook or crook i wanted to react know that table is updated
+                        tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+                      });
+                  }
+                }
+            )
+          },
           (rowData) => {
             return rowData.is_approved == 0 ? {
               icon: DeleteIcon, tooltip: 'delete',
               onClick: (event, rowData) => {
                 //alert("delete  user")
                 deleteEmployee(rowData)
-                .then(() => {
-                  // resolve();
-                  // By hook or crook i wanted to react know that table is updated
-                  tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
-                });
+                  .then(() => {
+                    // resolve();
+                    toast.error("Deleted Successfully")
+
+                    // By hook or crook i wanted to react know that table is updated
+                    tableUpdated ? setTableUpdated(false) : setTableUpdated(true);
+                  });
               }
             } : ""
           },

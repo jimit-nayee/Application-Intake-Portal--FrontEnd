@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import home_page from "../../images/home_page.jpg";
 import { registerAPI } from "../../services/EmployeeService";
+import { Toaster, toast } from "react-hot-toast";
 
 
 function Register() {
@@ -13,14 +14,26 @@ function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const formSubmit = (data) => {
     console.log(data);
     data = { ...data, is_approved: 0 };
     // setdetails(data);
-    registerAPI(data);
-    navigate("/");
+    registerAPI(data)
+      .then(() => {
+        toast.success(" Register Successfull ")
+        setTimeout(() => {
+          navigate("/");
+        }, (2000));
+
+      });
+
   };
-  return (
+  return (<>
+    <Toaster
+      position="top-right"
+      reverseOrder={false}
+    />
     <div
       className="flex items-center justify-center"
       style={{
@@ -32,6 +45,7 @@ function Register() {
         backgroundRepeat: "no-repeat",
       }}
     >
+
       {/* <pre>
       {JSON.stringify(details,2,undefined)}
     </pre> */}
@@ -94,6 +108,7 @@ function Register() {
             type="submit"
             className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full"
           >
+
             Register
           </button>
 
@@ -106,6 +121,8 @@ function Register() {
         </form>
       </div>
     </div>
+  </>
+
   );
 }
 

@@ -8,6 +8,7 @@ import { loginAPI } from "../../services/AuthorizationService";
 import jwt from 'jwt-decode'
 
 import { useAuth } from "../../utils/auth";
+import { Toaster, toast } from "react-hot-toast";
 
 function Login() {
   const [user, setUser] = useState({});
@@ -45,7 +46,7 @@ function Login() {
 
     }).catch((err) => {
       console.log(err.response.data);
-      alert(err.response.data);
+      toast.error(err.response.data);
     });
   };
 
@@ -54,6 +55,10 @@ function Login() {
       className="shadow-lg bg-gray-700 w-1/4 py-10 text-white h-max"
       style={{ padding: "30px 30px" }}
     >
+      <Toaster
+            position="top-center"
+            reverseOrder={false}
+          />
       <form className="form flex flex-col" onSubmit={handleSubmit(formSubmit)}>
         <label htmlFor="Username">Email</label>
         <input
