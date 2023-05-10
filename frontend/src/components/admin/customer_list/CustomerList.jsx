@@ -8,13 +8,13 @@ import {FadeLoader} from 'react-spinners'
 import api from '../../../services/mainService';
 import { addCustomer, getCustomerList, updateCustomer, deleteCustomer } from '../../../services/CustomerService';
 
-
 const CustomerList = () => {
   
   const [tableData, setTableData] = useState([])
   let [tableUpdated,setTableUpdated]=useState(false);
   let [length,setLength]=useState(0);
   const [loading,setLoading]=useState(true);
+
   const columns = [
     { title: "Email", field:"email", sorting: true, filtering: true, headerStyle: { color: "#fff" } },
     { title: "First Namer", field: "fname", filterPlaceholder: "filter" },
@@ -32,11 +32,9 @@ const CustomerList = () => {
         setTableData(res.data);
         setLoading(false);
         setLength(Array.from(res.data).length)
-        // alert(length);
-    }
-      
-      ).catch((err)=>console.log("Error Occured"))
-  },[tableUpdated]);
+      })
+      .catch((err)=>console.log("Error Occured"))
+    },[tableUpdated]);
   return (
     <>
       <MaterialTable columns={columns} data={tableData}  title="Customers Information"

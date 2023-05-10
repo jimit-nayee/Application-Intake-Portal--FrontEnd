@@ -1,28 +1,28 @@
 import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 import {  createContext, useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const AuthContext=createContext(null);
 
 export const AuthProvider=({children})=>{
-  const [user,setUser]=useState(null);
-  const [xsrfToken,setXsrfToken]=useState(null)
-  const navigate=useNavigate();
-  const login=(user,xsrf)=>{
-    setUser(user)
-    setXsrfToken(xsrf)
-    
-    // alert("user is set");
+  const [userMail,setUserMail]=useState(null);
+  const [userRole,setUserRole]=useState(null)
+  const login=()=>{
+    const user =jwtDecode(Cookies.get('token'));
+    setUserMail(user.sub);
+    setUserRole(user.authorities);
+
   }
   const logout=()=>{
-    setUser(null)
+    setUserMail(null)
+    setUserRole(null)
     Cookies.remove("token")
-    setXsrfToken(null)
     window.location.href="/"
-    // alert("getting logged out")
     
   }
-  return (<AuthContext.Provider value={{user,login,logout}}>
+
+  return (<AuthContext.Provider value={{userRole,userMail,login,logout}}>
     {children}
   </AuthContext.Provider>
   )

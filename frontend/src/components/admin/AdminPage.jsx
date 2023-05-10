@@ -13,23 +13,7 @@ const AdminPage = () => {
   const navigate=useNavigate()
   // alert(Cookies.get("token"))
 useEffect(()=>{
-  
-  let token=(Cookies.get("token"));
-  if(token!=null)
-  {
-    token=jwtDecode(token);
-    if(token.authorities=="ROLE_ADMIN")
-    {
-      setAdmin(true)
-    }
-    else{
-      window.location.href="/"
-    }
-  }
-  else{
-    window.location.href="/"
-  }
-  
+  auth.userMail!=null ? (auth.userRole=="ROLE_ADMIN" ? setAdmin(true): window.location.href="/"):window.location.href="/" 
 })
   const navigation = [
     { name: 'Customers', href: 'list', current: true },
