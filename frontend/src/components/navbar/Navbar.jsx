@@ -25,6 +25,9 @@ export default function Navabar({ navigation }) {
   const handleLogout = () => {
     auth.logout();
   }
+  useEffect(()=>{
+
+  },[])
   return (
 
     <Disclosure as="nav" className="bg-gray-800">
@@ -54,12 +57,12 @@ export default function Navabar({ navigation }) {
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
-                    {navigation.map((item) => (
+                    {navigation.map((item,index) => (
                       <NavLink
                         className="navlink"
                         key={item.name}
                         to={item.href}
-
+                        
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
@@ -98,7 +101,7 @@ export default function Navabar({ navigation }) {
                             onClick={() => handleLogout()}
                           >
 
-                            <div style={{display:"flex",width:"250px",alignItems:"center",gap:"30px"}}> 
+                            <div style={{display:"flex",width:"300px",alignItems:"center",gap:"30px"}}> 
                               <div>
                                 <AccountCircleIcon style={{fontSize:"70px"}} />
                               </div>

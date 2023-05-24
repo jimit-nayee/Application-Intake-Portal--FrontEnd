@@ -27,6 +27,13 @@ const AgentCustomerList = () => {
     { title: "City", field: "city",filterPlaceholder:"filter" },
     { title: "State", field: "state",
      headerStyle: { color: "#fff" } },
+     { title: "Status", field: "approvementStatus" ,
+     lookup:{1:
+              <h1 style={{ "color": "green", "fontWeight": "bold" }}> Approved</h1>,
+            0:
+             <h1 style={{ "color": "red", "fontWeight": "bold" }}> Disapproved</h1>,
+            2:
+               <h1 style={{ "color": "orange", "fontWeight": "bold" }}> Pending</h1>,  filterPlaceholder:"filter" }}
   ]
   
 
@@ -113,13 +120,13 @@ const AgentCustomerList = () => {
             makePostRequest();
           }),
         
-          onRowDelete: (selectedRow) => new Promise((resolve, reject) => {
-            axios.get(`http://localhost:8080/deleteCustomer?email=${selectedRow.email}`).then(()=>{
-            resolve();
-            // By hook or crook i wanted to react know that table is updated
-              tableUpdated ? setTableUpdated(false) : setTableUpdated(true);      
-            });
-          })
+          // onRowDelete: (selectedRow) => new Promise((resolve, reject) => {
+          //   axios.get(`http://localhost:8080/deleteCustomer?email=${selectedRow.email}`).then(()=>{
+          //   resolve();
+          //   // By hook or crook i wanted to react know that table is updated
+          //     tableUpdated ? setTableUpdated(false) : setTableUpdated(true);      
+          //   });
+          // })
         }}
         actions={[(row)=>{
           return {

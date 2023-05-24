@@ -1,0 +1,47 @@
+<style>
+    form {
+  width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.required {
+  color: red;
+}
+
+
+</style>
+
+<form action="/register" method="post">
+    <input type="text" name="username" placeholder="Username">
+    <input type="text" name="first_name" placeholder="First Name">
+    <input type="text" name="last_name" placeholder="Last Name">
+    <input type="password" name="password" placeholder="Password">
+    <input type="password" name="confirm_password" placeholder="Confirm Password">
+    <input type="submit" value="Register">
+  </form>
+  

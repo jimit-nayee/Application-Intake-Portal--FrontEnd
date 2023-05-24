@@ -12,6 +12,8 @@ import DraggableSignature from "./components/DraggableSignature";
 import dayjs from "dayjs";
 import axios from "axios";
 import './CustomScrollbar.css'; // Import your custom scrollbar styles
+import { primary5 } from "./utils/colors";
+import { FadeLoader } from "react-spinners";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -25,7 +27,7 @@ function downloadURI(uri) {
   // document.body.removeChild(link);
 }
 
-function Pdf({ pdfSrc, setPdfSrc }) {
+function Pdf({ pdfSrc, setPdfSrc ,setViewPdfOrTextEditor,setSignature,setTableUpdated,tableUpdated}) {
   const styles = {
     container: {
       maxWidth: 640,
@@ -119,8 +121,7 @@ function Pdf({ pdfSrc, setPdfSrc }) {
     return () => {
       console.log(" pdf component unmounted");
       setSignatureURL(null)
-      // setPdfSrc(null)
-      setPdfSrc(null)
+      
     }
 
   }, [])
@@ -138,6 +139,7 @@ function Pdf({ pdfSrc, setPdfSrc }) {
 
   return (
     <div>
+
       <div style={styles.container}>
 
         {signatureDialogVisible ? (
@@ -149,8 +151,7 @@ function Pdf({ pdfSrc, setPdfSrc }) {
               // alert("confirmed")
               setSignatureURL(url);
               setSignatureDialogVisible(false);
-
-
+          
 
             }}
           />
@@ -158,15 +159,22 @@ function Pdf({ pdfSrc, setPdfSrc }) {
 
 
 
-        {pdfSrc ? (
+      
           <div>
             <div style={styles.controls}>
               <div>
 
                 {!signatureURL ? (
                   <BigButton
-                    marginRight={8}
-                    title={"Add signature"}
+                  marginRight={8}
+                  title={"Add signature"}
+                  // style={{backgroundColor:"green","&hover:":{
+                  //   backgroundColor:"white"
+                  // }}}
+                 
+                  customFillColor="white"
+                  hoverTextColor="green"
+                  initialBgColor="green"
                     onClick={() => setSignatureDialogVisible(true)}
                   />
                 ) : null}
@@ -174,13 +182,20 @@ function Pdf({ pdfSrc, setPdfSrc }) {
                 <BigButton
                   marginRight={8}
                   title={"Reset"}
-                  disabled={signatureURL ? false : true}
+                  style={{ display: signatureURL ? 'block' : "none"}}
+                  customFillColor="white"
+                  hoverTextColor="skyblue"
+                  initialBgColor="skyblue"
+                  
+
                   onClick={() => {
 
                     if (window.confirm("Do you really wanna Reset ?")) {
                       setSignatureDialogVisible(false);
                       setSignatureURL(null);
                       setPdfSrc(originalPdf)
+                
+                      
                     }
 
 
@@ -189,26 +204,51 @@ function Pdf({ pdfSrc, setPdfSrc }) {
                 />
 
               </div>
-              {pdfSrc ? (
-                <BigButton
-                  marginRight={8}
-                  inverted={true}
-                  title={"Save"}
-                  disabled={signatureURL ? false : true}
+           
+                <>
 
-                  onClick={() => {
-                    if (signatureURL)
-                      downloadURI(pdfSrc);
-                    else
-                      alert("please do signature first");
-                  }}
-                />
-              ) : null}
+                  <BigButton
+                    marginRight={8}
+                    inverted={true}
+                    title={"Approve"}
+                    style={{ display: signatureURL ? 'block' : "none", }}
+                    customFillColor="green"
+                    hoverTextColor="white"
+                    initialBgColor="white"
+
+                    onClick={() => {
+                    setPdfSrc(pdfSrc);
+                    setSignature(signatureURL);
+                    // alert(tableUpdated)
+                    tableUpdated ? setTableUpdated(false) : setTableUpdated(true)
+                    
+                    
+                    }}
+                    />
+
+                  <BigButton
+                    marginRight={8}
+                    inverted={true}
+                    title={"Disapprove"}
+                    style={{ display: signatureURL ? 'none' : "block"}}
+
+                    customFillColor="red"
+                    hoverTextColor="white"
+                    initialBgColor="white"
+
+                    onClick={() => {
+                     setViewPdfOrTextEditor("editor")
+                    }}
+
+
+                  />
+                </>
+              
             </div>
             <div ref={documentRef} style={styles.documentBlock} className="documentRef">
 
-
-              {pdfSrc ? <Document className="document"
+           
+             <Document className="document"
                 key={count}
                 file={pdfSrc}
                 onLoadSuccess={(data) => {
@@ -232,7 +272,7 @@ function Pdf({ pdfSrc, setPdfSrc }) {
                   }}
                 />
               </Document>
-                : ""}
+               
             </div>
             <PagingControl
               pageNum={pageNum}
@@ -240,7 +280,7 @@ function Pdf({ pdfSrc, setPdfSrc }) {
               totalPages={totalPages}
             />
           </div>
-        ) : null}
+     
       </div>
     </div>
   );

@@ -2,9 +2,15 @@ import api from "./mainService";
 
 const baseURL = "http://localhost:8080"
 
-
-export const registerCustomerAPI = async (data) => {
-    const res = await api.post(`${baseURL}/registerCustomer`, data, { withCredentials: true });
+export const registerCustomerAPI = async (data,setUploadProgress) => {
+    setUploadProgress(0)
+    const res = await api.post(`${baseURL}/registerCustomer`, data, { withCredentials: true ,  onUploadProgress: (progressEvent) => {
+        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+        setUploadProgress(progress);
+        console.log(setUploadProgress)
+        
+     
+      }});
     return res;
 };
 

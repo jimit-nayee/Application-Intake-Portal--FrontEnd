@@ -9,24 +9,26 @@ import { registerCustomerAPI, validateAPI } from '../../services/CustomerService
 import api from '../../services/mainService';
 import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
+
+import ProgressBar from "@ramonak/react-progress-bar";
 // import { Toast } from 'react-toastify/dist/components';
 
 const err = (e) => toast.error(e)
 const success = (e) => toast.success(e)
-let fileData = { file: "" }
+// let fileData = { file: "" }
 
 function AddCustomerForApprovement() {
 
-  useEffect(() => {
-  
-    api.get("http://localhost:8080/csrf", { withCredentials: true })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []);
+  // useEffect(() => {
+
+  //   api.get("http://localhost:8080/csrf", { withCredentials: true })
+  //     .then(response => {
+  //       console.log(response);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // }, []);
 
   let [details, setDetails] = useState({ email: "", fname: "", lname: "", address: "", state: "", city: "" });
   let [fnameCheckmark, setFnameCheckmark] = useState("none");
@@ -35,14 +37,18 @@ function AddCustomerForApprovement() {
   let [stateCheckmark, setStateCheckmark] = useState("none");
   let [customerFound, setCustomerFound] = useState(false);
   let [submitting, setSubmitting] = useState(false)
+  let [submitted, setSubmitted] = useState(false);
   let [error, setError] = useState("")
   let [isFormValid, setIsFormValid] = useState(false);
   const [file, setFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
 
     let res = validateAPI(details);
+
     res.then((res) => {
+
       if (res.data.result === "true") {
         setCustomerFound(true);
         res.data.fname === "false" && details.fname !== "" ? setFnameCheckmark("visible") : setFnameCheckmark("hidden");
@@ -62,18 +68,20 @@ function AddCustomerForApprovement() {
   const handleFileChange = (event) => {
     setError("")
     setFile(event.target.files[0]);
-    let reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.onload = (event) => {
-      console.log("File data", event.target.result)
-      fileData.file = event.target.result;
-    }
+    // let reader = new FileReader();
+    // reader.readAsDataURL(event.target.files[0]);
+    // reader.onload = (event) => {
+    //   console.log("File data", event.target.result)
+    //   fileData.file = event.target.result;
+    // }
   };
 
   const handleViewClick = () => {
     const fileurl = URL.createObjectURL(file);
     window.open(fileurl, '_blank');
   }
+
+  console.log("add customer for approvement component reloaded")
 
   const {
     register,
@@ -91,37 +99,41 @@ function AddCustomerForApprovement() {
   const formSubmit = (data) => {
     //this has to be dynamic via jwt token
     let approvemntStatus = "2";
-    
-    data["pdf"] = fileData.file;
+
+    data["pdf"] = file;
     data["approvementStatus"] = approvemntStatus;
-  
-    // if(jwt.getRole==="admin")
-    // {
-    //   approvemntStatus=1;
-    // }
+
     if (!file) {
       setError("File is missing");
       err("file is missing")
       return
     }
     setSubmitting(true);
-    console.log(data)
-    // alert(jwtDecode(Cookies.get("token")).sub)
-    registerCustomerAPI({ ...data, approvemntStatus: approvemntStatus, addedBy: jwtDecode(Cookies.get("token")).sub }).then((res) => {
-      setSubmitting(false)
 
-      if (res.data.result === "true") {
-        setCustomerFound(true);
-      }
-      else if (res.data.result === "submitted") {
-        success("customer submitted for approvement")
-      } else {
-        setCustomerFound(false)
-      }
-    }).catch((err)=>{
-      toast.error("failed to add customer")
-      setSubmitting(false)
-    });
+
+    console.log("progress", uploadProgress)
+    // alert(jwtDecode(Cookies.get("token")).sub)
+    registerCustomerAPI(
+      { ...data, approvemntStatus: approvemntStatus, addedBy: jwtDecode(Cookies.get("token")).sub }
+      , setUploadProgress).then((res) => {
+        setSubmitting(false)
+        setSubmitted(true)
+        setDetails({ email: "", fname: "", lname: "", address: "", state: "", city: "" })
+        setFile(null)
+
+        if (res.data.result === "true") {
+          setCustomerFound(true);
+        }
+        else if (res.data.result === "submitted") {
+          setUploadProgress(0)
+          success("customer submitted for approvement")
+        } else {
+          setCustomerFound(false)
+        }
+      }).catch((err) => {
+        toast.error("failed to add customer")
+        setSubmitting(false)
+      });
   };
 
   return (
@@ -211,12 +223,13 @@ function AddCustomerForApprovement() {
 
                     <div className="id flex items-center ">
                       <div className='flex items-center flex-1'>
-                        <TextField id="standard-basic" label="Custmore  id" className='w-full' variant="standard" placeholder='Enter email id' {...register("email")} required onChange={debounce(handleChange, 300)} autoComplete="off" tabIndex={-1}
+                        <TextField id="standard-basic" label="Custmore  id" className='w-full' variant="standard" placeholder='Enter email id' {...register("email")} required onChange={debounce(handleChange, 300)
+                        } autoComplete="off" tabIndex={-1}
                         />
                       </div>
                       <div>
-                        {customerFound ? <span className="visible">✔️</span> : ``}
-                        {!customerFound && details.email !== "" ? <span className="visible">❌</span> : ``}
+                        {customerFound ? <span className="visible">✔️</span> : ""}
+                        {!customerFound && details.email !== "" ? <span className="visible">❌</span> : ""}
                       </div>
                     </div>
                     <div className="fname flex items-center">
@@ -272,11 +285,33 @@ function AddCustomerForApprovement() {
                           <span style={{ visibility: cityChecckmark === "none" ? "hidden" : cityChecckmark, display: "block" }} className="hidden">❌</span> : ""}
                       </div>
                     </div>
-                    <div className="submit flex justify-center mt-4 mb-4" variant="outlined">
+            
+
+                    {
+                      submitting ?
+                        <>
+                          <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
+                            <div>
+                              Uploading File
+                              <ProgressBar completed={uploadProgress} style={{ width: "100%" }} />
+                            </div>
+
+                          </div>
+
+                        </>
+
+                        :
+                        <div className="submit flex justify-center mt-4 mb-4" variant="outlined">
+                          <  Button type='submit' variant="outlined" disabled={!isFormValid}>Submit</Button>
+                        </div>
+                    }
+                    {/* <div className="submit flex justify-center mt-4 mb-4" variant="outlined">
                       {
-                        submitting ? <PulseLoader /> : <Button type='submit' variant="outlined" disabled={!isFormValid}>Submit</Button>
+                        submitting ? <>
+                        <ProgressBar completed={uploadProgress} style={{width:"100%"}}/>
+                        </> : <Button type='submit' variant="outlined" disabled={!isFormValid}>Submit</Button>
                       }
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

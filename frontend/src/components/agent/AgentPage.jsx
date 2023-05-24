@@ -33,9 +33,7 @@ const AgentPage = () => {
   ]
   return (
     agent ? <>
-
       <Navbar navigation={navigation} />
-
       <Outlet />
     </> : ""
   )

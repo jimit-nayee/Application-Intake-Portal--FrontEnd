@@ -7,10 +7,12 @@ import "./style.css"
 import api from '../../../services/mainService';
 import { ToastContainer } from 'react-toastify';
 import { Toaster, toast,error } from 'react-hot-toast';
+import { BeatLoader } from 'react-spinners';
 const EmployeeList = () => {
 
   const [tableData, setTableData] = useState([])
   let [tableUpdated, setTableUpdated] = useState(false);
+  const [loading,setLoading]=useState(null)
 
   const columns = [
     { title: "Username", field: "email", filterPlaceholder: "filter" },
@@ -19,17 +21,21 @@ const EmployeeList = () => {
     {
       title: "Status", field: "is_approved", filterPlaceholder: "filter", lookup: {
         0:
-          <h1 style={{ "color": "red", "fontWeight": "bold" }}> Pending</h1>, 1: <h1 style={{ "color": "green", "fontWeight": "bold" }}> Approved</h1>
+          <h1 style={{ "color": "red", "fontWeight": "bold" }}> Pending</h1>, 
+        1:
+          <h1 style={{ "color": "green", "fontWeight": "bold" }}> Approved</h1>
       }
     },
   ]
 
   useEffect(() => {
+    setLoading(true)
     getAllEmployees()
-      .then((res) => { console.log(res); setTableData(res.data); })
+      .then((res) => {setLoading(false); console.log(res); setTableData(res.data); })
       .catch((err) => {
         setTableData(false);
-        console.log("Error occured")
+        setLoading(false)
+        console.log("Error occured",err)
       })
   }, [tableUpdated]);
 
@@ -39,7 +45,10 @@ const EmployeeList = () => {
         position="top-right"
         reverseOrder={false}
       />
-      <MaterialTable columns={columns} data={tableData} title="Customers Information"
+      {
+        loading ? <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100%"}}>
+        <BeatLoader />
+       </div>:<MaterialTable columns={columns} data={tableData} title="Customers Information"
         editable={{
           // onRowDelete: (selectedRow) => new Promise((resolve, reject) => {
           //   // console.log(selectedRow)
@@ -118,7 +127,7 @@ const EmployeeList = () => {
             } : ""
           },
         ]}
-      />
+      />}
     </>
   );
 }

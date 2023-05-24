@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -12,7 +12,9 @@ import { Toaster, toast } from "react-hot-toast";
 
 function Login() {
   const [user, setUser] = useState({});
-  
+  const [loginButtonText,setLoginText]=useState("Login")
+  const params=useParams();
+  console.log(params)
    const navigate = useNavigate();
   const auth=useAuth();
   const {
@@ -23,7 +25,7 @@ function Login() {
   const formSubmit = (data) => {
     // setCredentials(data);
     // console.log(data);
- 
+    setLoginText("Logging in...")
     loginAPI(data).then((res) => {
       Cookies.set("token", res.data);
       const token = jwt(res.data);
@@ -31,22 +33,28 @@ function Login() {
       auth.login(token);
       if(token.authorities=="ROLE_ADMIN")
       {
-        navigate("admin_page",{replace:true})
+        navigate("/admin_page",{replace:true})
       }
       if(token.authorities=="ROLE_REVIEWER")
       {
-        navigate("reviewer_page",{replace:true})
+        navigate("/reviewer_page",{replace:true})
       }
       if(token.authorities=="ROLE_AGENT")
       {
-        navigate("agent_page",{replace:true})
+        navigate("/agent_page",{replace:true})
       }
       // if(data.role=="Admin")
       //   navigate("/admin_page")
-
+      
     }).catch((err) => {
-      console.log(err.response.data);
-      toast.error(err.response.data);
+      setLoginText("Login")
+      console.log("error response",err.response)
+      if(!err.response)
+        toast.error("Server is not responding")
+      else if(err.response)
+      {
+        toast.error(err.response.data);    
+      }
     });
   };
 
@@ -64,6 +72,7 @@ function Login() {
         <input
           type="text"
           id="email"
+          value={params.email}
           className="shadow appearance-none border  rounded  py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
           {...register("email", { required: "Username is required" })}
         />
@@ -96,7 +105,7 @@ function Login() {
           </select> */}
         <p style={{ color: "red" }}>{errors.password?.message}</p>
         <button className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full">
-          Login
+          {loginButtonText}
         </button>
 
         <div className="mt-3">

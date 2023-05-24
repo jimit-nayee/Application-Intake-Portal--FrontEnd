@@ -15,17 +15,19 @@ export function BigButton({
   small,
   disabled,
   marginRight,
+  initialBgColor,
+  hoverTextColor
 }) {
   const [hoverRef, isHovered] = useHover();
-
+  
   let fillColor = customFillColor || primary45;
   const whiteColor = customWhiteColor || "#FFF";
 
-  let initialBg = null;
+  let initialBg = initialBgColor || null;
   let hoverBg = fillColor;
 
   let initialColor = fillColor;
-  let hoverColor = whiteColor;
+  let hoverColor = hoverTextColor || whiteColor;
 
   if (inverted) {
     initialBg = fillColor;
@@ -68,7 +70,7 @@ export function BigButton({
     <div
       id={id}
       ref={hoverRef}
-      style={{ ...styles.container, ...style }}
+      style={{ ...styles.container, ...style,border:`${initialBg} solid  1px` }}
       onClick={() => {
         if (!disabled) {
           onClick();
